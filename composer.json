@@ -1,0 +1,8 @@
+{
+  "name": "dragipostolovski/smartcleaner",
+  "description": "A WordPress plugin to clean up the database and optimize performance.",
+  "type": "project",
+  "require": {
+    "yahnis-elsts/plugin-update-checker": "^5.6"
+  }
+}
