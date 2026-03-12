@@ -13,10 +13,15 @@ Over time, plugins, imports, and deleted content can leave behind metadata that 
 
 ## Features
 
-- Admin page under **Tools -> Orphaned Postmeta**.
+- Top-level admin menu under **Smart Cleaner**.
+- Overview page under **Smart Cleaner -> Overview**.
+- Orphaned postmeta cleanup page under **Smart Cleaner -> Orphaned Postmeta**.
 - Paginated orphaned rows view (50 rows per page).
+- Filter orphaned rows by `meta_key` with per-key counts.
 - Batch delete for current page.
+- Batch delete for the current page and selected `meta_key`.
 - Full delete for all orphaned rows.
+- Full delete for only the selected orphaned `meta_key`.
 - Nonce-protected destructive actions.
 - GitHub-based plugin update checks via `plugin-update-checker`.
 
@@ -31,7 +36,7 @@ Over time, plugins, imports, and deleted content can leave behind metadata that 
 
 1. Copy the plugin folder into `wp-content/plugins/smartcleaner`.
 2. Activate **Smart Cleaner** from the WordPress Plugins screen.
-3. Open **Tools -> Orphaned Postmeta**.
+3. Open **Smart Cleaner -> Orphaned Postmeta**.
 
 ### Development (Composer)
 
@@ -43,11 +48,14 @@ This installs `yahnis-elsts/plugin-update-checker` used for update checks.
 
 ## Usage
 
-1. Go to **Tools -> Orphaned Postmeta**.
-2. Review the table of orphaned meta rows.
-3. Choose one of the cleanup actions:
+1. Go to **Smart Cleaner -> Orphaned Postmeta**.
+2. Optionally filter the results by `meta_key` using the select field.
+3. Review the table of orphaned meta rows.
+4. Choose one of the cleanup actions:
 	- **Delete This Batch**: deletes only the currently listed page.
 	- **Delete All Orphaned Postmeta**: deletes all orphaned rows.
+
+When a `meta_key` filter is selected, both delete actions apply only to that selected orphaned key.
 
 ## Safety Notes
 
@@ -73,6 +81,14 @@ The plugin can check for updates from this repository:
 Configured branch: `master`
 
 ## Changelog
+
+### 1.0.2 (12.03.2026)
+
+- Added a top-level **Smart Cleaner** admin menu with an overview page.
+- Moved the orphaned postmeta screen under **Smart Cleaner -> Orphaned Postmeta**.
+- Added `meta_key` filtering with per-key counts.
+- Added filtered batch and full deletion support for a selected orphaned `meta_key`.
+- Preserved active filters across pagination and reset actions.
 
 ### 1.0.1 (12.03.2026)
 
