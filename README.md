@@ -16,6 +16,7 @@ Over time, plugins, imports, and deleted content can leave behind metadata that 
 - Top-level admin menu under **Smart Cleaner**.
 - Overview page under **Smart Cleaner -> Overview**.
 - Orphaned postmeta cleanup page under **Smart Cleaner -> Orphaned Postmeta**.
+- Custom SVG admin menu icon with WordPress-style default and active states.
 - Paginated orphaned rows view (50 rows per page).
 - Filter orphaned rows by `meta_key` with per-key counts.
 - Batch delete for current page.
@@ -46,6 +47,16 @@ composer install
 
 This installs `yahnis-elsts/plugin-update-checker` used for update checks.
 
+### Development (Frontend Build)
+
+```bash
+cd build
+npm install
+npm run build
+```
+
+This installs the local webpack toolchain used for plugin frontend/admin assets.
+
 ## Usage
 
 1. Go to **Smart Cleaner -> Orphaned Postmeta**.
@@ -72,6 +83,12 @@ Core logic lives in:
 - `includes/orphaned-postmeta.php`
 - `smartcleaner.php`
 
+Build tooling lives in:
+
+- `build/package.json`
+- `build/webpack.config.js`
+- `dist/`
+
 ## Updates
 
 The plugin can check for updates from this repository:
@@ -81,6 +98,11 @@ The plugin can check for updates from this repository:
 Configured branch: `master`
 
 ## Changelog
+
+### 1.0.3 (13.03.2026)
+
+- Added a custom SVG admin menu icon for the top-level **Smart Cleaner** menu.
+- Added local npm/webpack build tooling under `build/` for plugin asset development.
 
 ### 1.0.2 (12.03.2026)
 

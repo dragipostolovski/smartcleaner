@@ -1,5 +1,9 @@
 == Changelog ==
 
+1.0.3 - 13.03.2026
+- Added a custom SVG admin menu icon for the Smart Cleaner top-level menu.
+- Added npm/webpack build tooling under `build/` for plugin asset development.
+
 1.0.2 - 12.03.2026
 - Added a top-level Smart Cleaner admin menu with Overview and Orphaned Postmeta pages.
 - Added orphaned meta key filtering with counts.
