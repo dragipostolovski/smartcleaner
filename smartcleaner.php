@@ -17,10 +17,12 @@ if (!defined('ABSPATH')) exit;
 // ======================================
 require_once plugin_dir_path(__FILE__) . 'includes/orphaned-postmeta.php';
 require_once plugin_dir_path(__FILE__) . 'includes/orphaned-media.php';
+require_once plugin_dir_path(__FILE__) . 'includes/table-sizes.php';
 
 define('SC_ADMIN_MENU_SLUG', 'smartcleaner');
 define('SC_ORPHANED_POSTMETA_MENU_SLUG', 'smartcleaner-orphaned-postmeta');
 define('SC_ORPHANED_MEDIA_MENU_SLUG', 'smartcleaner-orphaned-media');
+define('SC_TABLE_SIZES_MENU_SLUG', 'smartcleaner-table-sizes');
 define('SC_ADMIN_MENU_ICON', plugin_dir_url(__FILE__) . 'build/src/icons/washing-machine.svg');
 
 function sc_get_admin_menu_icon_data_uri($color) {
@@ -52,6 +54,7 @@ function sc_render_admin_dashboard_page() {
 	echo '<ul style="list-style:disc;padding-left:20px;">';
 	echo '<li><a href="' . esc_url(admin_url('admin.php?page=' . SC_ORPHANED_MEDIA_MENU_SLUG)) . '">Orphaned Media</a></li>';
 	echo '<li><a href="' . esc_url(admin_url('admin.php?page=' . SC_ORPHANED_POSTMETA_MENU_SLUG)) . '">Orphaned Postmeta</a></li>';
+	echo '<li><a href="' . esc_url(admin_url('admin.php?page=' . SC_TABLE_SIZES_MENU_SLUG)) . '">Table Sizes</a></li>';
 	echo '</ul>';
 	echo '</div>';
 }
@@ -92,6 +95,15 @@ function sc_register_admin_menu() {
 		'manage_options',
 		SC_ORPHANED_POSTMETA_MENU_SLUG,
 		'sc_find_orphaned_postmeta_page'
+	);
+
+	add_submenu_page(
+		SC_ADMIN_MENU_SLUG,
+		'Table Sizes',
+		'Table Sizes',
+		'manage_options',
+		SC_TABLE_SIZES_MENU_SLUG,
+		'sc_render_table_sizes_page'
 	);
 }
 add_action('admin_menu', 'sc_register_admin_menu');
