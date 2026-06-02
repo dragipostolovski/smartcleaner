@@ -11,20 +11,41 @@ function sc_get_database_table_sizes($order = 'desc') {
 
 	$order_sql = $order === 'asc' ? 'ASC' : 'DESC';
 
-	return $wpdb->get_results(
+	$rows = $wpdb->get_results(
 		$wpdb->prepare(
-			"SELECT table_name,
-			        table_type,
-			        engine,
-			        table_rows,
-			        data_length,
-			        index_length,
-			        (COALESCE(data_length, 0) + COALESCE(index_length, 0)) AS total_size
+			"SELECT TABLE_NAME AS table_name,
+			        TABLE_TYPE AS table_type,
+			        ENGINE AS engine,
+			        TABLE_ROWS AS table_rows,
+			        DATA_LENGTH AS data_length,
+			        INDEX_LENGTH AS index_length,
+			        (COALESCE(DATA_LENGTH, 0) + COALESCE(INDEX_LENGTH, 0)) AS total_size
 			 FROM information_schema.TABLES
-			 WHERE table_schema = %s
+			 WHERE TABLE_SCHEMA = %s
 			 ORDER BY total_size {$order_sql}, table_name ASC",
 			DB_NAME
-		)
+		),
+		ARRAY_A
+	);
+
+	if (empty($rows)) {
+		return array();
+	}
+
+	return array_map('sc_normalize_database_table_size_row', $rows);
+}
+
+function sc_normalize_database_table_size_row($row) {
+	$row = array_change_key_case((array) $row, CASE_LOWER);
+
+	return array(
+		'table_name' => isset($row['table_name']) ? (string) $row['table_name'] : '',
+		'table_type' => isset($row['table_type']) ? (string) $row['table_type'] : '',
+		'engine' => isset($row['engine']) ? (string) $row['engine'] : '',
+		'table_rows' => isset($row['table_rows']) ? (int) $row['table_rows'] : 0,
+		'data_length' => isset($row['data_length']) ? (int) $row['data_length'] : 0,
+		'index_length' => isset($row['index_length']) ? (int) $row['index_length'] : 0,
+		'total_size' => isset($row['total_size']) ? (int) $row['total_size'] : 0,
 	);
 }
 
@@ -52,7 +73,7 @@ function sc_render_table_sizes_table($rows, $order) {
 		),
 		admin_url('admin.php')
 	);
-	$size_label = $order === 'asc' ? 'Size ↑' : 'Size ↓';
+	$size_label = $order === 'asc' ? 'Size (ASC)' : 'Size (DESC)';
 
 	echo '<table class="widefat striped" style="max-width:100%;">';
 	echo '<thead><tr>';
@@ -67,13 +88,13 @@ function sc_render_table_sizes_table($rows, $order) {
 
 	foreach ($rows as $row) {
 		echo '<tr>';
-		echo '<td><code>' . esc_html($row->table_name) . '</code></td>';
-		echo '<td>' . esc_html($row->table_type ?: 'unknown') . '</td>';
-		echo '<td>' . esc_html($row->engine ?: 'n/a') . '</td>';
-		echo '<td style="text-align:right;">' . esc_html(number_format_i18n((int) $row->table_rows)) . '</td>';
-		echo '<td style="text-align:right;">' . esc_html(sc_format_table_size_bytes($row->data_length)) . '</td>';
-		echo '<td style="text-align:right;">' . esc_html(sc_format_table_size_bytes($row->index_length)) . '</td>';
-		echo '<td style="text-align:right;"><strong>' . esc_html(sc_format_table_size_bytes($row->total_size)) . '</strong></td>';
+		echo '<td><code>' . esc_html($row['table_name']) . '</code></td>';
+		echo '<td>' . esc_html($row['table_type'] ?: 'unknown') . '</td>';
+		echo '<td>' . esc_html($row['engine'] ?: 'n/a') . '</td>';
+		echo '<td style="text-align:right;">' . esc_html(number_format_i18n((int) $row['table_rows'])) . '</td>';
+		echo '<td style="text-align:right;">' . esc_html(sc_format_table_size_bytes($row['data_length'])) . '</td>';
+		echo '<td style="text-align:right;">' . esc_html(sc_format_table_size_bytes($row['index_length'])) . '</td>';
+		echo '<td style="text-align:right;"><strong>' . esc_html(sc_format_table_size_bytes($row['total_size'])) . '</strong></td>';
 		echo '</tr>';
 	}
 
@@ -90,7 +111,7 @@ function sc_render_table_sizes_page() {
 	$total_size = 0;
 
 	foreach ($rows as $row) {
-		$total_size += (int) $row->total_size;
+		$total_size += (int) $row['total_size'];
 	}
 
 	echo '<div class="wrap">';
